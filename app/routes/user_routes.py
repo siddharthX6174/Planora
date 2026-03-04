@@ -6,12 +6,12 @@ from app.schemas.user import UserUpdateSchema, PasswordChangeSchema
 bp = Blueprint('users', __name__)
 
 @bp.route('/me', methods=['GET'])
-@jwt_required()
+@jwt_required
 def get_profile():
     return jsonify(g.current_user.to_dict()), 200
 
 @bp.route('/me', methods=['PUT'])
-@jwt_required()
+@jwt_required
 def update_profile():
     try:
         data = request.get_json()
@@ -22,7 +22,7 @@ def update_profile():
         return jsonify({'error': str(e)}), 422
 
 @bp.route('/me/password', methods=['PUT'])
-@jwt_required()
+@jwt_required
 def change_password():
     try:
         data = request.get_json()

@@ -6,7 +6,7 @@ from app.schemas.task import TaskCreateSchema, TaskUpdateSchema, TaskStatusUpdat
 bp = Blueprint('tasks', __name__)
 
 @bp.route('', methods=['GET'])
-@jwt_required()
+@jwt_required
 def get_tasks():
     # Get filters from query params
     filters = {
@@ -28,7 +28,7 @@ def get_tasks():
     return jsonify(result), status_code
 
 @bp.route('', methods=['POST'])
-@jwt_required()
+@jwt_required
 def create_task():
     try:
         data = request.get_json()
@@ -39,13 +39,13 @@ def create_task():
         return jsonify({'error': str(e)}), 422
 
 @bp.route('/<task_id>', methods=['GET'])
-@jwt_required()
+@jwt_required
 def get_task(task_id):
     result, status_code = TaskService.get_task(task_id)
     return jsonify(result), status_code
 
 @bp.route('/<task_id>', methods=['PUT'])
-@jwt_required()
+@jwt_required
 def update_task(task_id):
     try:
         data = request.get_json()
@@ -56,7 +56,7 @@ def update_task(task_id):
         return jsonify({'error': str(e)}), 422
 
 @bp.route('/<task_id>/status', methods=['PATCH'])
-@jwt_required()
+@jwt_required
 def update_task_status(task_id):
     try:
         data = request.get_json()
@@ -67,7 +67,7 @@ def update_task_status(task_id):
         return jsonify({'error': str(e)}), 422
 
 @bp.route('/<task_id>', methods=['DELETE'])
-@jwt_required()
+@jwt_required
 def delete_task(task_id):
     result, status_code = TaskService.delete_task(task_id)
     if status_code == 204:
@@ -75,7 +75,7 @@ def delete_task(task_id):
     return jsonify(result), status_code
 
 @bp.route('/search', methods=['GET'])
-@jwt_required()
+@jwt_required
 def search_tasks():
     query = request.args.get('q', '')
     if not query:
@@ -85,7 +85,7 @@ def search_tasks():
     return jsonify(result), status_code
 
 @bp.route('/<task_id>/assign', methods=['POST'])
-@jwt_required()
+@jwt_required
 def assign_task(task_id):
     assignee_id = request.json.get('user_id')
     if not assignee_id:

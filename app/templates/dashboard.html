@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Planora{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here's your task overview.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h4>Total Tasks</h4>
+            <div class="stat-value" data-stat="total">0</div>
+        </div>
+        <div class="stat-card">
+            <h4>To Do</h4>
+            <div class="stat-value" data-stat="todo">0</div>
+        </div>
+        <div class="stat-card">
+            <h4>In Progress</h4>
+            <div class="stat-value" data-stat="in_progress">0</div>
+        </div>
+        <div class="stat-card">
+            <h4>Completed</h4>
+            <div class="stat-value" data-stat="done">0</div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="dashboard-header">
+        <h2>Your Tasks</h2>
+        <button class="btn btn-primary" onclick="showModal('newTaskModal')">+ New Task</button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <div>
+                <label for="searchInput">Search</label>
+                <input type="text" id="searchInput" data-filter="search" placeholder="Search tasks...">
+            </div>
+            <div>
+                <label for="statusFilter">Status</label>
+                <select id="statusFilter" data-filter="status">
+                    <option value="">All Status</option>
+                    <option value="todo">To Do</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            </div>
+            <div>
+                <label for="priorityFilter">Priority</label>
+                <select id="priorityFilter" data-filter="priority">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div>
+                <label for="sortSelect">Sort By</label>
+                <select id="sortSelect">
+                    <option value="">Default</option>
+                    <option value="date-asc">Due Date (Early First)</option>
+                    <option value="date-desc">Due Date (Late First)</option>
+                    <option value="priority-high">Priority (High First)</option>
+                    <option value="title-asc">Title (A-Z)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Grid -->
+    <div class="grid">
+        <!-- Sample Task Card 1 -->
+        <div class="task-card todo" data-task-id="1" data-due-date="2026-03-15">
+            <h4>Design Dashboard UI</h4>
+            <p>Create a modern and responsive dashboard interface with the purple color scheme.</p>
+            <div class="task-meta">
+                <span class="task-priority medium">Medium Priority</span>
+                <span class="task-status todo">To Do</span>
+                <span style="color: #70587C;">📅 Mar 15, 2026</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
+                <button class="btn btn-success btn-small" onclick="toggleTaskCompletion('1')">✓ Complete</button>
+                <button class="btn btn-danger btn-small" onclick="deleteTask('1')">Delete</button>
+            </div>
+        </div>
+
+        <!-- Sample Task Card 2 -->
+        <div class="task-card in_progress" data-task-id="2" data-due-date="2026-03-10">
+            <h4>Setup Database</h4>
+            <p>Configure MySQL database and create migration scripts for the application.</p>
+            <div class="task-meta">
+                <span class="task-priority high">High Priority</span>
+                <span class="task-status in_progress">In Progress</span>
+                <span style="color: #70587C;">📅 Mar 10, 2026</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
+                <button class="btn btn-success btn-small" onclick="toggleTaskCompletion('2')">✓ Complete</button>
+                <button class="btn btn-danger btn-small" onclick="deleteTask('2')">Delete</button>
+            </div>
+        </div>
+
+        <!-- Sample Task Card 3 -->
+        <div class="task-card done completed" data-task-id="3" data-due-date="2026-03-05">
+            <h4>Project Setup</h4>
+            <p>Initialize Flask project and create initial project structure.</p>
+            <div class="task-meta">
+                <span class="task-priority low">Low Priority</span>
+                <span class="task-status done">Done</span>
+                <span style="color: #70587C;">📅 Mar 5, 2026</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteTask('3')">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Task Modal -->
+<div id="newTaskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New Task</h2>
+            <button class="modal-close" onclick="closeModal('newTaskModal')">×</button>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="taskTitle">Task Title</label>
+                <input type="text" id="taskTitle" required placeholder="Enter task title">
+            </div>
+
+            <div class="form-group">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" placeholder="Describe your task..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="taskPriority">Priority</label>
+                <select id="taskPriority" required>
+                    <option value="">Select Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="taskCategory">Category</label>
+                <select id="taskCategory">
+                    <option value="">Select Category</option>
+                    <option value="work">Work</option>
+                    <option value="personal">Personal</option>
+                    <option value="shopping">Shopping</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="taskDueDate">Due Date</label>
+                <input type="date" id="taskDueDate">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Task</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div id="editTaskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Task</h2>
+            <button class="modal-close" onclick="closeModal('editTaskModal')">×</button>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="editTaskTitle">Task Title</label>
+                <input type="text" id="editTaskTitle" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editTaskDescription">Description</label>
+                <textarea id="editTaskDescription"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="editTaskPriority">Priority</label>
+                <select id="editTaskPriority" required>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editTaskStatus">Status</label>
+                <select id="editTaskStatus" required>
+                    <option value="todo">To Do</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editTaskDueDate">Due Date</label>
+                <input type="date" id="editTaskDueDate">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        if (this.value) {
+            sortTasks(this.value);
+        }
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+        filterTasks();
+    });
+</script>
+{% endblock %}

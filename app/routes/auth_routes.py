@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.schemas.user import UserCreateSchema, UserLoginSchema
 from app.services.auth_service import AuthService
-from app.middleware.auth_middleware import jwt_required
+from app.middleware.auth_middleware import jwt_required as require_auth
 
 bp = Blueprint('auth', __name__)
 limiter = Limiter(key_func=get_remote_address)
@@ -51,7 +51,7 @@ def logout():
     return jsonify(result), status_code
 
 @bp.route('/me', methods=['GET'])
-@jwt_required()
+@require_auth
 def get_profile():
     from flask import g
     return jsonify(g.current_user.to_dict()), 200

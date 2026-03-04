@@ -1,6 +1,6 @@
 from app.models.user import User
 from app.database import db
-from passlib.hash import bcrypt
+from passlib.hash import pbkdf2_sha256 as pwd_context
 from datetime import datetime
 
 class UserService:
@@ -34,11 +34,11 @@ class UserService:
             return {'error': 'User not found'}, 404
         
         # Verify current password
-        if not bcrypt.verify(data['current_password'], user.password):
+        if not pwd_context.verify(data['current_password'], user.password):
             return {'error': 'Current password is incorrect'}, 401
         
         # Hash and set new password
-        user.password = bcrypt.hash(data['new_password'])
+        user.password = pwd_context.hash(data['new_password'])
         user.updated_at = datetime.utcnow()
         db.session.commit()
         

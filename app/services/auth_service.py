@@ -1,7 +1,7 @@
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
-from passlib.hash import bcrypt
-from datetime import timedelta
+from passlib.hash import pbkdf2_sha256 as pwd_context
+from datetime import datetime, timedelta
 import uuid
 
 from app.models.user import User
@@ -19,7 +19,7 @@ class AuthService:
             return {'error': 'Email already registered'}, 409
         
         # Hash password
-        hashed_password = bcrypt.hash(user_data['password'])
+        hashed_password = pwd_context.hash(user_data['password'])
         
         # Create user
         user = User(
@@ -57,7 +57,7 @@ class AuthService:
             id=str(uuid.uuid4()),
             token=refresh_token,
             user_id=user.id,
-            expires_at=timedelta(days=7)
+            expires_at=datetime.utcnow() + timedelta(days=7)
         )
         db.session.add(refresh_token_obj)
         db.session.commit()
@@ -72,7 +72,7 @@ class AuthService:
     def login(credentials):
         user = User.query.filter_by(email=credentials['email']).first()
         
-        if not user or not bcrypt.verify(credentials['password'], user.password):
+        if not user or not pwd_context.verify(credentials['password'], user.password):
             return {'error': 'Invalid credentials'}, 401
         
         access_token = create_access_token(
@@ -89,7 +89,7 @@ class AuthService:
             id=str(uuid.uuid4()),
             token=refresh_token,
             user_id=user.id,
-            expires_at=timedelta(days=7)
+            expires_at=datetime.utcnow() + timedelta(days=7)
         )
         db.session.add(refresh_token_obj)
         db.session.commit()

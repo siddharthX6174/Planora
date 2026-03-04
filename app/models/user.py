@@ -13,7 +13,8 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    tasks = db.relationship('Task', backref='owner', lazy=True, cascade='all, delete-orphan')
+    tasks = db.relationship('Task', foreign_keys='Task.user_id', back_populates='owner', lazy=True, cascade='all, delete-orphan')
+    assigned_tasks = db.relationship('Task', foreign_keys='Task.assigned_to', back_populates='assignee', lazy=True, cascade='all, delete-orphan')
     categories = db.relationship('Category', backref='owner', lazy=True, cascade='all, delete-orphan')
     refresh_tokens = db.relationship('RefreshToken', backref='user', lazy=True, cascade='all, delete-orphan')
     

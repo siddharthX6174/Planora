@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Categories - Planora{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Categories</h1>
+        <p>Organize your tasks with custom categories.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Action Bar -->
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+        <h2>Category Management</h2>
+        <button class="btn btn-primary" onclick="showModal('newCategoryModal')">+ New Category</button>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="grid">
+        <!-- Category Card 1 -->
+        <div class="card" data-category-id="1" style="border-left: 4px solid #FF6B6B;">
+            <div class="card-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">💼</span>
+                    Work
+                </h3>
+            </div>
+            <p>Professional tasks and work-related items.</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editCategoryModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteCategory('1')">Delete</button>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+                <small style="color: #70587C;">📊 5 tasks</small>
+            </div>
+        </div>
+
+        <!-- Category Card 2 -->
+        <div class="card" data-category-id="2" style="border-left: 4px solid #4ECDC4;">
+            <div class="card-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">👤</span>
+                    Personal
+                </h3>
+            </div>
+            <p>Personal projects and life goals.</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editCategoryModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteCategory('2')">Delete</button>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+                <small style="color: #70587C;">📊 3 tasks</small>
+            </div>
+        </div>
+
+        <!-- Category Card 3 -->
+        <div class="card" data-category-id="3" style="border-left: 4px solid #FFD93D;">
+            <div class="card-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">🛍️</span>
+                    Shopping
+                </h3>
+            </div>
+            <p>Shopping lists and purchase reminders.</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editCategoryModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteCategory('3')">Delete</button>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+                <small style="color: #70587C;">📊 2 tasks</small>
+            </div>
+        </div>
+
+        <!-- Category Card 4 -->
+        <div class="card" data-category-id="4" style="border-left: 4px solid #95E1D3;">
+            <div class="card-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">💪</span>
+                    Health & Fitness
+                </h3>
+            </div>
+            <p>Exercise routines and health goals.</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editCategoryModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteCategory('4')">Delete</button>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+                <small style="color: #70587C;">📊 4 tasks</small>
+            </div>
+        </div>
+
+        <!-- Category Card 5 -->
+        <div class="card" data-category-id="5" style="border-left: 4px solid #C7C9EB;">
+            <div class="card-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">📚</span>
+                    Learning
+                </h3>
+            </div>
+            <p>Educational activities and skill development.</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-primary btn-small" onclick="showModal('editCategoryModal')">Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteCategory('5')">Delete</button>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+                <small style="color: #70587C;">📊 6 tasks</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Category Modal -->
+<div id="newCategoryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New Category</h2>
+            <button class="modal-close" onclick="closeModal('newCategoryModal')">×</button>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" id="categoryName" required placeholder="e.g., Work, Personal, Shopping">
+            </div>
+
+            <div class="form-group">
+                <label for="categoryColor">Color</label>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="color" id="categoryColor" value="#502F4C" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                    <input type="text" id="categoryColorHex" value="#502F4C" readonly style="flex: 1;">
+                </div>
+                <small style="color: #70587C; display: block; margin-top: 0.5rem;">Click to choose a color</small>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryDescription">Description (Optional)</label>
+                <textarea id="categoryDescription" placeholder="Describe this category..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Category</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div id="editCategoryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Category</h2>
+            <button class="modal-close" onclick="closeModal('editCategoryModal')">×</button>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="editCategoryName">Category Name</label>
+                <input type="text" id="editCategoryName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editCategoryColor">Color</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="color" id="editCategoryColor" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                    <input type="text" id="editCategoryColorHex" readonly style="flex: 1;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="editCategoryDescription">Description</label>
+                <textarea id="editCategoryDescription"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Color picker sync
+    document.getElementById('categoryColor')?.addEventListener('input', function() {
+        document.getElementById('categoryColorHex').value = this.value;
+    });
+
+    document.getElementById('editCategoryColor')?.addEventListener('input', function() {
+        document.getElementById('editCategoryColorHex').value = this.value;
+    });
+</script>
+{% endblock %}

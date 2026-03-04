@@ -22,7 +22,8 @@ class Task(db.Model):
     category_id = db.Column(db.String(36), db.ForeignKey('categories.id'), nullable=True)
     
     # Relationships
-    assignee = db.relationship('User', foreign_keys=[assigned_to])
+    owner = db.relationship('User', foreign_keys=[user_id], back_populates='tasks')
+    assignee = db.relationship('User', foreign_keys=[assigned_to], back_populates='assigned_tasks')
     
     def to_dict(self):
         return {

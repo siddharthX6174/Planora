@@ -3,16 +3,20 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_jwt_extended import JWTManager
+import os
 
 from app.config import Config
 from app.database import db, init_db
 
 # Import routes
-from app.routes import auth_routes, task_routes, user_routes, category_routes
+from app.routes import auth_routes, task_routes, user_routes, category_routes, frontend_routes
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    
+    # Set secret key for session management
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
     
     # Initialize extensions
     CORS(app)
@@ -29,6 +33,7 @@ def create_app(config_class=Config):
     )
     
     # Register blueprints
+    app.register_blueprint(frontend_routes.frontend_bp)  # Frontend routes (no prefix)
     app.register_blueprint(auth_routes.bp, url_prefix='/api/v1/auth')
     app.register_blueprint(task_routes.bp, url_prefix='/api/v1/tasks')
     app.register_blueprint(user_routes.bp, url_prefix='/api/v1/users')

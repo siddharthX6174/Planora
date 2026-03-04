@@ -61,8 +61,9 @@ pip install -r requirements.txt
 
 Create a `.env` file in the root directory:
 ```
-# Database
-DATABASE_URL=postgresql://username:password@localhost:5432/taskmanager
+Create a `.env` file in the root directory. Example for a MySQL development setup (we use `pymysql`):
+# Database (MySQL)
+DATABASE_URL=mysql+pymysql://root:Password123@localhost:3306/Planora
 
 # JWT Settings
 JWT_SECRET_KEY=your-super-secret-key-change-this
@@ -72,10 +73,7 @@ JWT_REFRESH_TOKEN_EXPIRES=604800  # 7 days
 # Application
 FLASK_ENV=development
 FLASK_APP=app/main.py
-FLASK_DEBUG=1
-
-# Rate Limiting
-RATELIMIT_DEFAULT=100/day;30/hour
+# Optional: app uses python run.py to start in development
 ```
 
 5. **Create Database**
@@ -95,7 +93,19 @@ flask seed-db
 
 8. **Start the Server**
 ```bash
-flask run
+On Windows (PowerShell):
+```powershell
+cd d:\kitetsu\Planora
+.\venv\Scripts\Activate.ps1
+# Run the app (development)
+python run.py
+```
+
+On macOS / Linux:
+```bash
+cd /path/to/Planora
+source venv/bin/activate
+python run.py
 ```
 
 The API will be available at `http://localhost:5000/api/v1`

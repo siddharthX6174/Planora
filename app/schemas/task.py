@@ -6,7 +6,7 @@ import uuid
 class TaskCreateSchema(BaseModel):
     title: str = Field(..., max_length=255)
     description: Optional[str] = None
-    priority: str = Field('medium', regex='^(low|medium|high)$')
+    priority: str = Field('medium', pattern='^(low|medium|high)$')
     due_date: Optional[datetime] = None
     category_id: Optional[str] = None
     
@@ -22,7 +22,7 @@ class TaskCreateSchema(BaseModel):
 class TaskUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, max_length=255)
     description: Optional[str] = None
-    priority: Optional[str] = Field(None, regex='^(low|medium|high)$')
+    priority: Optional[str] = Field(None, pattern='^(low|medium|high)$')
     due_date: Optional[datetime] = None
     category_id: Optional[str] = None
     
@@ -36,4 +36,4 @@ class TaskUpdateSchema(BaseModel):
         return v
 
 class TaskStatusUpdateSchema(BaseModel):
-    status: str = Field(..., regex='^(todo|in_progress|done|archived)$')
+    status: str = Field(..., pattern='^(todo|in_progress|done|archived)$')
