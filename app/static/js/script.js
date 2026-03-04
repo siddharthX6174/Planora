@@ -128,6 +128,37 @@ function toggleTaskCompletion(taskId) {
   }
 }
 
+// Server-backed toggle: mark task as done or revert to todo
+async function toggleTaskCompletionServer(taskId) {
+  const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+  if (!taskCard) return;
+
+  // Determine current status (fallback to 'todo')
+  const statusSpan = taskCard.querySelector('.task-status');
+  let currentStatus = 'todo';
+  if (statusSpan) {
+    // class may contain status like 'todo', 'in_progress', 'done'
+    const classes = statusSpan.className.split(/\s+/);
+    currentStatus = classes.find(c => ['todo','in_progress','done','archived'].includes(c)) || 'todo';
+  }
+
+  const newStatus = currentStatus === 'done' ? 'todo' : 'done';
+
+  const res = await API.updateTaskStatus(taskId, newStatus);
+  if (res) {
+    // update UI classes and text
+    taskCard.classList.toggle('completed', newStatus === 'done');
+    if (statusSpan) {
+      // remove old status classes
+      statusSpan.classList.remove('todo','in_progress','done','archived');
+      statusSpan.classList.add(newStatus);
+      statusSpan.textContent = newStatus.replace('_',' ').toUpperCase();
+    }
+    updateStats();
+    if (typeof loadTasks === 'function') loadTasks();
+  }
+}
+
 // Delete task with confirmation
 function deleteTask(taskId) {
   if (confirm('Are you sure you want to delete this task?')) {
