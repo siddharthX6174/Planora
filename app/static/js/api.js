@@ -229,6 +229,31 @@ function isAuthenticated() {
   return !!localStorage.getItem('access_token');
 }
 
+// Expose API helpers under a single namespace to avoid global name collisions
+window.API = {
+  apiCall,
+  loginUser,
+  registerUser,
+  logoutUser,
+  refreshAccessToken,
+  getTasks,
+  getTaskById,
+  createTask,
+  updateTask,
+  updateTaskStatus,
+  deleteTask,
+  searchTasks,
+  assignTask,
+  getCategories,
+  createCategory,
+  deleteCategory,
+  getProfile,
+  updateProfile,
+  changePassword,
+  getAccessToken,
+  isAuthenticated
+};
+
 // Example usage in HTML forms
 // Add this to your form submit handlers
 

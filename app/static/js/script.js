@@ -140,6 +140,19 @@ function deleteTask(taskId) {
   }
 }
 
+// Server-backed deletion: calls API.deleteTask then updates UI
+async function deleteTaskServer(taskId) {
+  if (!confirm('Are you sure you want to delete this task?')) return;
+  const res = await API.deleteTask(taskId);
+  if (res) {
+    const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+    if (taskCard) taskCard.remove();
+    // refresh stats and lists
+    updateStats();
+    if (typeof loadTasks === 'function') loadTasks();
+  }
+}
+
 // Delete category with confirmation
 function deleteCategory(categoryId) {
   if (confirm('Are you sure you want to delete this category?')) {
@@ -148,6 +161,18 @@ function deleteCategory(categoryId) {
       categoryCard.remove();
       showAlert('Category deleted successfully', 'success');
     }
+  }
+}
+
+// Server-backed category delete helper
+async function deleteCategoryServer(categoryId) {
+  if (!confirm('Are you sure you want to delete this category?')) return;
+  const res = await API.deleteCategory(categoryId);
+  if (res) {
+    const categoryCard = document.querySelector(`[data-category-id="${categoryId}"]`);
+    if (categoryCard) categoryCard.remove();
+    showAlert('Category deleted successfully', 'success');
+    if (typeof loadCategories === 'function') loadCategories();
   }
 }
 
