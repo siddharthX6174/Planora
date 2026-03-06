@@ -130,10 +130,10 @@ class TaskService:
         # Validate status transition
         new_status = status_data['status']
         valid_transitions = {
-            'todo': ['in_progress'],
+            'todo': ['in_progress', 'done'],
             'in_progress': ['done', 'todo'],
-            'done': ['archived', 'in_progress'],
-            'archived': ['todo']
+            'done': ['archived', 'in_progress', 'todo'],
+            'archived': ['todo', 'done']
         }
         
         if new_status not in valid_transitions.get(task.status, []):
@@ -142,6 +142,8 @@ class TaskService:
         task.status = new_status
         if new_status == 'done':
             task.completed_at = datetime.utcnow()
+        else:
+            task.completed_at = None
         
         task.updated_at = datetime.utcnow()
         db.session.commit()

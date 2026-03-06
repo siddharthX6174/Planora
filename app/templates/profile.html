@@ -61,19 +61,19 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
                 <div class="stat-card">
                     <h4>Total Tasks Created</h4>
-                    <div class="stat-value">42</div>
+                    <div class="stat-value" id="stat-total-tasks">0</div>
                 </div>
                 <div class="stat-card">
                     <h4>Tasks Completed</h4>
-                    <div class="stat-value">28</div>
+                    <div class="stat-value" id="stat-completed-tasks">0</div>
                 </div>
                 <div class="stat-card">
                     <h4>Categories</h4>
-                    <div class="stat-value">5</div>
+                    <div class="stat-value" id="stat-categories">0</div>
                 </div>
                 <div class="stat-card">
                     <h4>Completion Rate</h4>
-                    <div class="stat-value">67%</div>
+                    <div class="stat-value" id="stat-completion-rate">0%</div>
                 </div>
             </div>
 
@@ -274,6 +274,87 @@
             this.style.color = '#502F4C';
             this.style.borderBottomColor = '#502F4C';
         });
+    });
+
+    // Handle edit profile form submission
+    const editProfileForm = document.querySelector('#editProfileModal form');
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userData = {
+                name: document.getElementById('editName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                location: document.getElementById('editLocation').value
+            };
+            
+            const result = await API.updateProfile(userData);
+            if (result) {
+                // Update the profile display
+                document.querySelector('.profile-info h2').textContent = userData.name;
+                document.querySelector('.profile-info p').innerHTML = `<strong>Email:</strong> ${userData.email}`;
+                
+                // Update personal information section
+                const infoCards = document.querySelectorAll('#tab-overview .card:first-child div');
+                if (infoCards.length >= 2) {
+                    infoCards[0].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Full Name</strong></p><p>${userData.name}</p>`;
+                    infoCards[1].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Email</strong></p><p>${userData.email}</p>`;
+                    if (infoCards[2]) infoCards[2].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Phone</strong></p><p>${userData.phone || '—'}</p>`;
+                    if (infoCards[3]) infoCards[3].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Location</strong></p><p>${userData.location || '—'}</p>`;
+                }
+                
+                closeModal('editProfileModal');
+                showAlert('Profile updated successfully!', 'success');
+            }
+        });
+    }
+
+    // Handle password change form submission
+    const changePasswordForm = document.querySelector('#tab-security form');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('New passwords do not match!', 'danger');
+                return;
+            }
+            
+            const result = await API.changePassword(currentPassword, newPassword);
+            if (result) {
+                this.reset();
+                showAlert('Password changed successfully!', 'success');
+            }
+        });
+    }
+
+    // Load dynamic task insights
+    async function loadTaskInsights() {
+        const tasksData = await API.getTasks({ limit: 1000 }); // Get all tasks
+        const categoriesData = await API.getCategories();
+        
+        if (!tasksData || !tasksData.data) return;
+        
+        const totalTasks = tasksData.data.length;
+        const completedTasks = tasksData.data.filter(t => t.status === 'done').length;
+        const totalCategories = categoriesData?.data?.length || 0;
+        const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        // Update the stats on the page
+        document.getElementById('stat-total-tasks').textContent = totalTasks;
+        document.getElementById('stat-completed-tasks').textContent = completedTasks;
+        document.getElementById('stat-categories').textContent = totalCategories;
+        document.getElementById('stat-completion-rate').textContent = completionRate + '%';
+    }
+
+    // Load insights when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTaskInsights();
     });
 </script>
 {% endblock %}

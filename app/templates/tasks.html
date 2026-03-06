@@ -64,52 +64,8 @@
 
     <!-- Grid View -->
     <div id="gridView" style="display: none;">
-        <div class="grid">
-            <!-- Task Cards will be populated here -->
-            <div class="task-card todo" data-task-id="1" data-due-date="2026-03-20">
-                <h4>Complete Project Documentation</h4>
-                <p>Write comprehensive documentation for all API endpoints and frontend components.</p>
-                <div class="task-meta">
-                    <span class="task-priority high">High Priority</span>
-                    <span class="task-status todo">To Do</span>
-                    <span style="color: #70587C;">📅 Mar 20, 2026</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn btn-primary btn-small">Edit</button>
-                    <button class="btn btn-success btn-small">✓ Complete</button>
-                    <button class="btn btn-danger btn-small">Delete</button>
-                </div>
-            </div>
-
-            <div class="task-card in_progress" data-task-id="2" data-due-date="2026-03-12">
-                <h4>API Testing</h4>
-                <p>Test all endpoints and ensure proper error handling and validation.</p>
-                <div class="task-meta">
-                    <span class="task-priority medium">Medium Priority</span>
-                    <span class="task-status in_progress">In Progress</span>
-                    <span style="color: #70587C;">📅 Mar 12, 2026</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn btn-primary btn-small">Edit</button>
-                    <button class="btn btn-success btn-small">✓ Complete</button>
-                    <button class="btn btn-danger btn-small">Delete</button>
-                </div>
-            </div>
-
-            <div class="task-card" data-task-id="3" data-due-date="2026-03-18">
-                <h4>User Interface Polish</h4>
-                <p>Fine-tune the user interface and improve the overall user experience.</p>
-                <div class="task-meta">
-                    <span class="task-priority medium">Medium Priority</span>
-                    <span class="task-status todo">To Do</span>
-                    <span style="color: #70587C;">📅 Mar 18, 2026</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn btn-primary btn-small">Edit</button>
-                    <button class="btn btn-success btn-small">✓ Complete</button>
-                    <button class="btn btn-danger btn-small">Delete</button>
-                </div>
-            </div>
+        <div id="tasksGrid" class="grid">
+            <!-- Task cards will be populated dynamically here -->
         </div>
     </div>
 
@@ -277,16 +233,18 @@
     function switchView(view) {
         document.getElementById('gridView').style.display = view === 'grid' ? 'block' : 'none';
         document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+        // Ensure tasks are loaded when switching views
+        loadTasks();
     }
 
     async function loadTasks() {
         const token = localStorage.getItem('access_token');
         if (!token) return;
 
-        const data = await API.getTasks();
+        const data = await API.getTasks({ limit: 1000 });
         if (!data || !data.data) return;
         
-        // Update task list in the table
+        // Update task list in the table (List View)
         const tbody = document.querySelector('table tbody');
         if (tbody) {
             tbody.innerHTML = '';
@@ -307,19 +265,60 @@
                 tbody.appendChild(row);
             });
         }
+
+        // Update task grid (Grid View)
+        const tasksGrid = document.getElementById('tasksGrid');
+        if (tasksGrid) {
+            tasksGrid.innerHTML = '';
+            
+            if (data.data.length === 0) {
+                tasksGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No tasks yet. Create one to get started!</p>';
+                return;
+            }
+
+            data.data.forEach(task => {
+                const dueDateStr = task.due_date ? new Date(task.due_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'No date';
+                const priorityClass = task.priority.toLowerCase();
+                const statusClass = task.status.replace('_', '-');
+                
+                const card = document.createElement('div');
+                card.className = `task-card ${statusClass}`;
+                card.setAttribute('data-task-id', task.id);
+                card.setAttribute('data-due-date', task.due_date || '');
+                card.innerHTML = `
+                    <h4>${task.title}</h4>
+                    <p>${task.description || 'No description'}</p>
+                    <div class="task-meta">
+                        <span class="task-priority ${priorityClass}">${task.priority.toUpperCase()}</span>
+                        <span class="task-status ${statusClass}">${task.status.replace('_', ' ').toUpperCase()}</span>
+                        <span style="color: #70587C;">📅 ${dueDateStr}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-primary btn-small" onclick="editTask('${task.id}')">Edit</button>
+                        <button class="btn btn-success btn-small" onclick="toggleTaskCompletionServer('${task.id}')">✓ Complete</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteTaskServer('${task.id}')">Delete</button>
+                    </div>
+                `;
+                tasksGrid.appendChild(card);
+            });
+        }
     }
 
     async function deleteTaskAPI(taskId) {
-        await API.deleteTask(taskId);
-        loadTasks();
+        const result = await API.deleteTask(taskId);
+        if (result || result === null) { // API returns success
+            loadTasks();
+        }
     }
 
     function editTask(taskId) {
         showAlert('Edit functionality coming soon!', 'info');
     }
 
-    // Initialize list view as default
-    switchView('list');
-    loadTasks();
+    // Initialize list view as default and load tasks
+    document.addEventListener('DOMContentLoaded', function() {
+        switchView('list');
+        loadTasks();
+    });
 </script>
 {% endblock %}

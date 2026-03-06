@@ -1,157 +1,189 @@
-# Task Manager API - Backend Service
+# Planora - Task Management Application
 
-A robust Task Management REST API built with Flask and PostgreSQL, featuring JWT authentication, task categorization, and complete CRUD operations with soft delete functionality.
+A modern, full-stack Task Management application built with Flask backend and dynamic frontend, featuring JWT authentication, real-time task synchronization, and comprehensive task categorization with an intuitive user interface.
 
 ---
 
 ## 🚀 Features
 
-- **User Authentication** - Register, login, JWT token refresh, password reset
-- **Task Management** - Create, read, update, delete tasks with status tracking
-- **Categories** - Organize tasks with custom categories
-- **Advanced Filtering** - Filter tasks by status, priority, due date
-- **Pagination** - Built-in pagination for list endpoints
-- **Soft Delete** - Tasks are soft-deleted, preserving data integrity
-- **Rate Limiting** - Protection against brute force attacks
-- **Input Validation** - Comprehensive request validation
-- **Ownership Verification** - Users can only access their own data
+### User Management
+- **User Registration & Authentication** - Secure registration with email validation and password requirements
+- **JWT Token Authentication** - Access tokens (15 min) and refresh tokens (7 days)
+- **Profile Management** - View and edit user profile information
+- **Password Management** - Change password functionality
+- **Dynamic User Statistics** - Real-time task insights and completion metrics
+
+### Task Management
+- **Full CRUD Operations** - Create, read, update, delete tasks with soft delete
+- **Task Status Tracking** - Flexible status transitions (todo → in_progress → done → archived)
+- **Task Priorities** - Low, Medium, High priority levels
+- **Due Dates** - Task deadline management
+- **Task Search & Filtering** - Filter by status, priority, categories
+- **Task Pagination** - Built-in pagination support
+
+### Dashboard Features
+- **Dynamic Dashboard** - Real-time task overview with statistics
+- **Task Insights** - Track total tasks, completed tasks, categories, and completion rate
+- **Grid & List Views** - Switch between grid and list view for task management
+- **Task Actions** - Complete, edit, and delete tasks directly from dashboard
+- **Responsive Design** - Mobile-friendly interface with Flexbox and CSS Grid
+
+### Categories & Organization
+- **Custom Categories** - Create and manage task categories
+- **Category Colors** - Assign colors to categories for better organization
+- **Category-Task Association** - Link tasks to categories
+- **Dynamic Category Loading** - Categories populate dynamically from database
+
+---
 
 ## 🛠 Tech Stack
 
-| Component       | Technology                            |
-|----------------|---------------------------------------|
-| Framework       | Flask + Flask-RESTx                   |
-| Database        | PostgreSQL                            |
-| ORM             | SQLAlchemy 2.0                        |
-| Migrations      | Alembic                               |
-| Authentication  | JWT (python-jose)                     |
-| Password Hashing| bcrypt (passlib)                      |
-| Validation      | Marshmallow                           |
-| Rate Limiting   | Flask-Limiter                         |
-| Environment     | python-dotenv                         |
-| Testing         | pytest + pytest-flask                 |
+| Layer       | Technology                                |
+|-------------|-------------------------------------------|
+| **Frontend**| HTML5, CSS3, Vanilla JavaScript          |
+| **Backend** | Flask, Flask-RESTx                       |
+| **Database**| MySQL with SQLAlchemy 2.0 ORM            |
+| **Auth**    | JWT (python-jose), bcrypt hashing        |
+| **Validation** | Marshmallow schemas                   |
+| **Migrations** | Alembic                                |
+| **Environment** | python-dotenv                          |
+
+---
 
 ## 📋 Prerequisites
 
 - Python 3.9+
-- PostgreSQL 13+
+- MySQL 5.7+
 - pip (Python package manager)
 - virtualenv (recommended)
+- Modern web browser (Chrome, Firefox, Safari, Edge)
 
-## ⚙️ Installation
+---
 
-1. **Clone the Repository**
+## ⚙️ Installation & Setup
+
+### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/task-manager-api.git
-cd task-manager-api
+git clone https://github.com/yourusername/Planora.git
+cd Planora
 ```
 
-2. **Create Virtual Environment**
+### 2. Create Virtual Environment
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Windows PowerShell
+.\venv\Scripts\Activate.ps1
+# macOS/Linux
+source venv/bin/activate
 ```
 
-3. **Install Dependencies**
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Configure Environment Variables**
-
-Create a `.env` file in the root directory:
+### 4. Configure Environment Variables
+Create `.env` file in root directory:
 ```
-Create a `.env` file in the root directory. Example for a MySQL development setup (we use `pymysql`):
-# Database (MySQL)
-DATABASE_URL=mysql+pymysql://root:Password123@localhost:3306/Planora
-
-# JWT Settings
-JWT_SECRET_KEY=your-super-secret-key-change-this
-JWT_ACCESS_TOKEN_EXPIRES=900  # 15 minutes
-JWT_REFRESH_TOKEN_EXPIRES=604800  # 7 days
-
-# Application
-FLASK_ENV=development
+# Flask Configuration
 FLASK_APP=app/main.py
-# Optional: app uses python run.py to start in development
+FLASK_ENV=development
+SECRET_KEY=your-super-secret-key-change-this
+
+# JWT Configuration
+JWT_SECRET_KEY=your-jwt-secret-key-change-this
+JWT_ACCESS_TOKEN_EXPIRES=900
+JWT_REFRESH_TOKEN_EXPIRES=604800
+
+# Database (MySQL)
+DATABASE_URL=mysql+pymysql://root:Password123@localhost:3306/planora
 ```
 
-5. **Create Database**
+### 5. Create Database
 ```sql
-CREATE DATABASE taskmanager;
+CREATE DATABASE planora;
 ```
 
-6. **Run Database Migrations**
+### 6. Run Database Migrations
 ```bash
 flask db upgrade
 ```
 
-7. **Seed Initial Data (Optional)**
+### 7. Start Application
 ```bash
-flask seed-db
-```
-
-8. **Start the Server**
-```bash
-On Windows (PowerShell):
-```powershell
-cd d:\kitetsu\Planora
-.\venv\Scripts\Activate.ps1
-# Run the app (development)
 python run.py
 ```
 
-On macOS / Linux:
-```bash
-cd /path/to/Planora
-source venv/bin/activate
-python run.py
-```
+The application will be available at:
+- **Frontend**: http://localhost:5000
+- **API**: http://localhost:5000/api/v1
 
-The API will be available at `http://localhost:5000/api/v1`
+---
 
 ## 📁 Project Structure
 
 ```
-task_manager/
+Planora/
 ├── app/
 │   ├── __init__.py              # App factory
-│   ├── main.py                  # Entry point
+│   ├── main.py                  # Flask app entry point
 │   ├── config.py                # Configuration
-│   ├── database.py              # DB setup
+│   ├── database.py              # SQLAlchemy setup
 │   │
-│   ├── models/                  # SQLAlchemy models
+│   ├── models/                  # Database models
+│   │   ├── user.py              # User model
+│   │   ├── task.py              # Task model
+│   │   ├── category.py          # Category model
+│   │   └── token.py             # Token model
+│   │
+│   ├── schemas/                 # Marshmallow validation schemas
 │   │   ├── user.py
 │   │   ├── task.py
 │   │   └── category.py
 │   │
-│   ├── schemas/                 # Marshmallow schemas
-│   │   ├── user.py
-│   │   ├── task.py
-│   │   └── category.py
+│   ├── routes/                  # API blueprints
+│   │   ├── auth_routes.py       # /api/v1/auth/*
+│   │   ├── task_routes.py       # /api/v1/tasks/*
+│   │   ├── user_routes.py       # /api/v1/users/*
+│   │   ├── category_routes.py   # /api/v1/categories/*
+│   │   └── frontend_routes.py   # Frontend pages
 │   │
-│   ├── routes/                  # Blueprints
-│   │   ├── auth.py
-│   │   ├── tasks.py
-│   │   ├── users.py
-│   │   └── categories.py
-│   │
-│   ├── services/                # Business logic
+│   ├── services/                # Business logic layer
 │   │   ├── auth_service.py
 │   │   ├── task_service.py
-│   │   └── user_service.py
+│   │   ├── user_service.py
+│   │   └── category_service.py
 │   │
-│   └── utils/                   # Helpers
-│       ├── decorators.py        # @jwt_required, etc.
-│       ├── validators.py
-│       └── rate_limiter.py
+│   ├── middleware/
+│   │   ├── __init__.py
+│   │   └── auth_middleware.py   # JWT verification
+│   │
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css        # Main stylesheet
+│   │   └── js/
+│   │       ├── api.js           # API integration
+│   │       └── script.js        # Frontend logic
+│   │
+│   └── templates/               # HTML templates
+│       ├── base.html            # Base template
+│       ├── index.html           # Homepage
+│       ├── login.html           # Login page
+│       ├── register.html        # Registration page
+│       ├── dashboard.html       # Task dashboard (dynamic)
+│       ├── tasks.html           # Tasks list/grid view (dynamic)
+│       ├── categories.html      # Categories page
+│       └── profile.html         # User profile
 │
-├── migrations/                  # Alembic migrations
+├── migrations/                  # Alembic database migrations
 ├── tests/                       # Test suite
-├── requirements.txt
-├── .env
-└── alembic.ini
+├── run.py                       # Application entry point
+├── requirements.txt             # Python dependencies
+├── .env                         # Environment variables
+└── README.md
 ```
+
+---
 
 ## 🔌 API Endpoints
 
@@ -159,175 +191,141 @@ task_manager/
 
 ### Authentication
 
-| Method | Endpoint             | Description                         | Body                             |
-|--------|----------------------|-------------------------------------|----------------------------------|
-| POST   | /auth/register       | Register new user                   | {name, email, password}          |
-| POST   | /auth/login          | Login & get tokens                  | {email, password}                |
-| POST   | /auth/logout         | Revoke refresh token                | -                                |
-| POST   | /auth/refresh        | Get new access token                | {refresh_token}                  |
-| POST   | /auth/forgot-password| Request password reset              | {email}                          |
-| POST   | /auth/reset-password | Reset with token                    | {token, new_password}            |
+| Method | Endpoint           | Description              | Auth Required |
+|--------|-------------------|--------------------------|---------------|
+| POST   | `/auth/register`  | Register new user         | No            |
+| POST   | `/auth/login`     | Login & get tokens        | No            |
+| POST   | `/auth/logout`    | Logout & revoke token     | Yes           |
+| POST   | `/auth/refresh`   | Get new access token      | No            |
 
-### Tasks (JWT Required)
+### Tasks
 
-| Method | Endpoint                       | Description                        |
-|--------|--------------------------------|------------------------------------|
-| GET    | /tasks                         | List all tasks (filter/paginate)   |
-| POST   | /tasks                         | Create new task                    |
-| GET    | /tasks/{id}                    | Get single task                    |
-| PUT    | /tasks/{id}                    | Update full task                   |
-| PATCH  | /tasks/{id}/status             | Update status only                 |
-| DELETE | /tasks/{id}                    | Soft delete task                   |
-| GET    | /tasks/search?q=               | Search tasks                       |
-| POST   | /tasks/{id}/assign             | Assign task to user                |
+| Method | Endpoint                   | Description                  | Auth Required |
+|--------|---------------------------|------------------------------|---------------|
+| GET    | `/tasks`                  | List all tasks (paginated)   | Yes           |
+| POST   | `/tasks`                  | Create new task              | Yes           |
+| GET    | `/tasks/{id}`             | Get single task              | Yes           |
+| PUT    | `/tasks/{id}`             | Update task details          | Yes           |
+| PATCH  | `/tasks/{id}/status`      | Update task status only      | Yes           |
+| DELETE | `/tasks/{id}`             | Soft delete task             | Yes           |
+| GET    | `/tasks/search?q=query`   | Search tasks by title        | Yes           |
 
-### Users (JWT Required)
+### Users
 
-| Method | Endpoint             | Description           |
-|--------|----------------------|-----------------------|
-| GET    | /users/me            | Get profile           |
-| PUT    | /users/me            | Update profile        |
-| PUT    | /users/me/password   | Change password       |
+| Method | Endpoint             | Description           | Auth Required |
+|--------|----------------------|-----------------------|---------------|
+| GET    | `/users/me`          | Get user profile      | Yes           |
+| PUT    | `/users/me`          | Update profile        | Yes           |
+| PUT    | `/users/me/password` | Change password       | Yes           |
 
-### Categories (JWT Required)
+### Categories
 
-| Method | Endpoint             | Description           |
-|--------|----------------------|-----------------------|
-| GET    | /categories          | List categories       |
-| POST   | /categories          | Create category       |
-| DELETE | /categories/{id}     | Delete category       |
+| Method | Endpoint           | Description        | Auth Required |
+|--------|--------------------|--------------------|---------------|
+| GET    | `/categories`      | List all categories| Yes           |
+| POST   | `/categories`      | Create category    | Yes           |
+| PUT    | `/categories/{id}` | Update category    | Yes           |
+| DELETE | `/categories/{id}` | Delete category    | Yes           |
 
-## 📊 Database Schema
+---
 
-```sql
--- Users table
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
+## 📊 Frontend Pages
 
--- Tasks table
-CREATE TABLE tasks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    status VARCHAR(20) DEFAULT 'todo',
-    priority VARCHAR(20) DEFAULT 'medium',
-    due_date TIMESTAMP,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    assigned_to UUID REFERENCES users(id),
-    category_id UUID REFERENCES categories(id),
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
-    deleted_at TIMESTAMP,
-    completed_at TIMESTAMP
-);
+### Dashboard (`/dashboard`)
+- **Real-time Task Statistics**: Total tasks, completed tasks, categories, completion rate
+- **Task Management**: View, complete, delete tasks
+- **Filters**: Search by title, filter by status and priority
+- **Sorting**: Sort by due date, priority, or title
+- **Dynamic Loading**: Tasks loaded from API on page load
 
--- Categories table
-CREATE TABLE categories (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(50) NOT NULL,
-    color VARCHAR(7) DEFAULT '#808080',
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    is_default BOOLEAN DEFAULT FALSE
-);
+### Tasks (`/tasks`)
+- **Grid & List Views**: Toggle between grid and list layouts
+- **Dynamic Grid Cards**: Task cards populated from database
+- **Full Task Details**: Title, description, priority, status, due date
+- **Quick Actions**: Edit, complete, delete buttons
+- **Filtering & Searching**: Search and filter by status/priority
+
+### Profile (`/profile`)
+- **Edit Profile**: Edit name, email, phone, location
+- **Profile Statistics**: Real-time task insights
+- **Account Management**: View account status and member since date
+- **Security Settings**: Change password, 2FA settings
+
+### Categories (`/categories`)
+- **View All Categories**: Display user categories
+- **Create Categories**: Add new categories with custom colors
+- **Manage Categories**: Edit and delete categories
+
+---
+
+## 🔄 Task Status Transitions
+
+The application supports flexible task status transitions:
+
+```
+todo ──→ in_progress ──→ done ──→ archived
+  ↓          ↓           ↓         ↓
+  └──────────┴───────────┴─────────┘
 ```
 
-## 🔐 Authentication Flow
+- **todo**: New tasks start here
+- **in_progress**: Task is currently being worked on
+- **done**: Task is completed
+- **archived**: Completed/inactive tasks
 
-1. **Registration**
-```bash
-curl -X POST http://localhost:5000/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com","password":"SecurePass123"}'
-```
+You can transition directly from `todo` to `done` using the "Complete" button for quick task completion.
 
-2. **Login**
-```bash
-curl -X POST http://localhost:5000/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"SecurePass123"}'
-```
+---
 
-Response:
-```json
-{
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-  "token_type": "bearer"
-}
-```
+## 🔐 Authentication & Security
 
-3. **Authenticated Request**
-```bash
-curl -X GET http://localhost:5000/api/v1/tasks \
-  -H "Authorization: Bearer <access_token>"
-```
+### JWT Token Flow
+1. User registers or logs in
+2. Server returns `access_token` (15 minutes) and `refresh_token` (7 days)
+3. Client includes `access_token` in Authorization header
+4. When access token expires, use `refresh_token` to get a new one
+5. Tokens stored in browser `localStorage`
 
-4. **Refresh Token**
-```bash
-curl -X POST http://localhost:5000/api/v1/auth/refresh \
-  -H "Content-Type: application/json" \
-  -d '{"refresh_token": "<refresh_token>"}'
-```
+### Password Security
+- Minimum 8 characters
+- Must contain uppercase letter
+- Must contain number
+- Hashed with bcrypt (12 rounds)
 
-## 📝 Usage Examples
+### Data Protection
+- SQL injection prevention via SQLAlchemy ORM
+- XSS protection via template escaping
+- CSRF tokens for form submissions
+- Input validation on all endpoints
+- Ownership verification - users can only access their own data
 
-### Create a Task
-```bash
-curl -X POST http://localhost:5000/api/v1/tasks \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Complete project documentation",
-    "description": "Write API docs and README",
-    "priority": "high",
-    "due_date": "2026-03-10T17:00:00Z",
-    "category_id": "550e8400-e29b-41d4-a716-446655440000"
-  }'
-```
+---
 
-### List Tasks with Filters
-```bash
-curl "http://localhost:5000/api/v1/tasks?status=in_progress&priority=high&page=1&limit=10" \
-  -H "Authorization: Bearer <token>"
-```
-
-### Update Task Status
-```bash
-curl -X PATCH http://localhost:5000/api/v1/tasks/{task_id}/status \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{"status": "done"}'
-```
-
-## ⚡ Rate Limiting
-
-| Endpoint             | Limit                          |
-|----------------------|--------------------------------|
-| /auth/login          | 10 requests per 15 minutes     |
-| /auth/register       | 5 requests per hour            |
-| /auth/forgot-password| 3 requests per hour            |
-| All other endpoints  | 100 requests per day           |
-
-## 🧪 Running Tests
+## 🧪 Testing
 
 ```bash
 # Run all tests
 pytest
 
-# Run with coverage
-pytest --cov=app tests/
-
 # Run specific test file
 pytest tests/test_auth.py
+
+# Run with verbose output
+pytest -v
+
+# Run with coverage report
+pytest --cov=app tests/
 ```
 
-## 📦 Deployment
+---
+
+## 🚀 Deployment
+
+### Using Gunicorn (Production)
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 app.main:app
+```
 
 ### Using Docker
 ```dockerfile
@@ -340,75 +338,91 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.main:app"]
+ENV FLASK_APP=app/main.py
+ENV FLASK_ENV=production
+
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app.main:app"]
 ```
 
-### Docker Compose
-```yaml
-version: '3.8'
+---
 
-services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    environment:
-      - DATABASE_URL=postgresql://user:pass@db:5432/taskmanager
-    depends_on:
-      - db
+## 🐛 Troubleshooting
 
-  db:
-    image: postgres:13
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=taskmanager
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+### Issue: "Database connection refused"
+- Ensure MySQL is running
+- Check DATABASE_URL in .env file
+- Verify MySQL credentials
 
-volumes:
-  postgres_data:
-```
+### Issue: "JWT token invalid"
+- Clear browser cache and localStorage
+- Log out and log back in
+- Ensure JWT_SECRET_KEY matches in .env
 
-## 🔒 Security Considerations
+### Issue: "Tasks not loading on dashboard"
+- Check browser console for errors (F12)
+- Ensure user is authenticated
+- Verify API is running on correct port
+- Check network tab for API response
 
-- Passwords hashed with bcrypt (12 rounds)
-- JWT tokens with short expiration (15 min access, 7 days refresh)
-- Refresh tokens stored in database for revocation
-- Input validation on all endpoints
-- SQL injection prevention via SQLAlchemy
-- CORS properly configured
-- Rate limiting on auth endpoints
-- Environment variables for secrets
+### Issue: "Password change fails"
+- Ensure old password is correct
+- Password must meet requirements (8+ chars, uppercase, number)
+- Check console for validation errors
 
-## 🚦 Status Codes
+---
 
-| Code | Description                              |
-|------|------------------------------------------|
-| 200  | OK - Successful GET/PUT/PATCH            |
-| 201  | Created - Resource created               |
-| 204  | No Content - Successful DELETE           |
-| 400  | Bad Request - Invalid input              |
-| 401  | Unauthorized - Missing/invalid JWT       |
-| 403  | Forbidden - Not resource owner           |
-| 404  | Not Found - Resource doesn't exist       |
-| 409  | Conflict - Duplicate email/category      |
-| 422  | Unprocessable - Validation error         |
-| 429  | Too Many Requests - Rate limit exceeded  |
-| 500  | Server Error - Something went wrong      |
+## 📝 Recent Updates
+
+### Version 1.1.0 (March 2026)
+✅ **Dashboard Improvements**
+- Fixed hardcoded task cards - now dynamic
+- Real-time task statistics
+- Task filtering and sorting
+- Completion/status tracking
+
+✅ **Profile Management**
+- Functional edit profile modal
+- Password change feature
+- Dynamic user statistics
+
+✅ **Task Management**
+- Fixed task status transitions (todo → done directly supported)
+- Dynamic grid view in tasks page
+- Complete, edit, delete functionality
+- Search and filter features
+
+✅ **Frontend Polish**
+- Responsive design improvements
+- Better error handling
+- Loading states
+
+---
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit changes (`git commit -m 'Add amazing feature'`)
+5. Push to branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see LICENSE file for details.
 
-## 📧 Contact
+---
 
-For questions or support, please open an issue on GitHub or contact the maintainer.
+## 📧 Support
+
+For issues, questions, or suggestions:
+- Open an issue on GitHub
+- Check existing documentation
+- Review test files for usage examples
+
+---
+
+**Last Updated:** March 6, 2026  
+**Status:** ✅ Fully Functional

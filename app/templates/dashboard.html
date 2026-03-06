@@ -76,54 +76,7 @@
     </div>
 
     <!-- Tasks Grid -->
-    <div class="grid">
-        <!-- Sample Task Card 1 -->
-        <div class="task-card todo" data-task-id="1" data-due-date="2026-03-15">
-            <h4>Design Dashboard UI</h4>
-            <p>Create a modern and responsive dashboard interface with the purple color scheme.</p>
-            <div class="task-meta">
-                <span class="task-priority medium">Medium Priority</span>
-                <span class="task-status todo">To Do</span>
-                <span style="color: #70587C;">📅 Mar 15, 2026</span>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
-                <button class="btn btn-success btn-small" onclick="toggleTaskCompletionServer('1')">✓ Complete</button>
-                <button class="btn btn-danger btn-small" onclick="deleteTaskServer('1')">Delete</button>
-            </div>
-        </div>
-
-        <!-- Sample Task Card 2 -->
-        <div class="task-card in_progress" data-task-id="2" data-due-date="2026-03-10">
-            <h4>Setup Database</h4>
-            <p>Configure MySQL database and create migration scripts for the application.</p>
-            <div class="task-meta">
-                <span class="task-priority high">High Priority</span>
-                <span class="task-status in_progress">In Progress</span>
-                <span style="color: #70587C;">📅 Mar 10, 2026</span>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
-                <button class="btn btn-success btn-small" onclick="toggleTaskCompletionServer('2')">✓ Complete</button>
-                <button class="btn btn-danger btn-small" onclick="deleteTaskServer('2')">Delete</button>
-            </div>
-        </div>
-
-        <!-- Sample Task Card 3 -->
-        <div class="task-card done completed" data-task-id="3" data-due-date="2026-03-05">
-            <h4>Project Setup</h4>
-            <p>Initialize Flask project and create initial project structure.</p>
-            <div class="task-meta">
-                <span class="task-priority low">Low Priority</span>
-                <span class="task-status done">Done</span>
-                <span style="color: #70587C;">📅 Mar 5, 2026</span>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
-                <button class="btn btn-danger btn-small" onclick="deleteTaskServer('3')">Delete</button>
-            </div>
-        </div>
-    </div>
+    <div id="tasksContainer" class="grid"></div>
 </div>
 
 <!-- New Task Modal -->
@@ -224,6 +177,123 @@
 
 {% block extra_js %}
 <script>
+    // Load real tasks from API
+    async function loadTasks() {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showAlert('Please log in first', 'warning');
+            return;
+        }
+
+        const data = await API.getTasks();
+        if (!data || !data.data) return;
+        
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = '';
+        
+        if (data.data.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No tasks yet. Create one to get started!</p>';
+            return;
+        }
+
+        data.data.forEach(task => {
+            const dueDateStr = task.due_date ? new Date(task.due_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'No date';
+            const priorityClass = task.priority.toLowerCase();
+            const statusClass = task.status.replace('_', '-');
+            
+            const card = document.createElement('div');
+            card.className = `task-card ${statusClass}`;
+            card.setAttribute('data-task-id', task.id);
+            card.innerHTML = `
+                <h4>${task.title}</h4>
+                <p>${task.description || 'No description'}</p>
+                <div class="task-meta">
+                    <span class="task-priority ${priorityClass}">${task.priority.toUpperCase()}</span>
+                    <span class="task-status ${statusClass}">${task.status.replace('_', ' ').toUpperCase()}</span>
+                    <span style="color: #70587C;">📅 ${dueDateStr}</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-small" onclick="showModal('editTaskModal')">Edit</button>
+                    <button class="btn btn-success btn-small" onclick="toggleTaskCompletionServer('${task.id}')">✓ Complete</button>
+                    <button class="btn btn-danger btn-small" onclick="deleteTaskServer('${task.id}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        updateStats();
+    }
+
+    // Update statistics
+    function updateStats() {
+        const API = window.API;
+        if (!API) return;
+        
+        API.getTasks().then(data => {
+            if (!data || !data.data) return;
+            
+            const tasks = data.data;
+            const total = tasks.length;
+            const todo = tasks.filter(t => t.status === 'todo').length;
+            const in_progress = tasks.filter(t => t.status === 'in_progress').length;
+            const done = tasks.filter(t => t.status === 'done').length;
+            
+            document.querySelector('[data-stat="total"]').textContent = total;
+            document.querySelector('[data-stat="todo"]').textContent = todo;
+            document.querySelector('[data-stat="in_progress"]').textContent = in_progress;
+            document.querySelector('[data-stat="done"]').textContent = done;
+        });
+    }
+
+    // Filter tasks
+    function filterTasks() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const priorityFilter = document.getElementById('priorityFilter').value;
+        
+        const cards = document.querySelectorAll('.task-card');
+        cards.forEach(card => {
+            const title = card.querySelector('h4').textContent.toLowerCase();
+            const status = card.className.split(' ')[1];
+            const priority = Array.from(card.querySelector('.task-priority').classList)
+                .find(c => ['low', 'medium', 'high'].includes(c));
+            
+            const matchesSearch = title.includes(searchTerm);
+            const matchesStatus = !statusFilter || status === statusFilter;
+            const matchesPriority = !priorityFilter || priority === priorityFilter;
+            
+            card.style.display = matchesSearch && matchesStatus && matchesPriority ? '' : 'none';
+        });
+    }
+
+    // Sort tasks
+    function sortTasks(sortBy) {
+        const container = document.getElementById('tasksContainer');
+        const cards = Array.from(container.querySelectorAll('.task-card'));
+        
+        cards.sort((a, b) => {
+            switch(sortBy) {
+                case 'date-asc':
+                case 'date-desc':
+                    const dateA = new Date(a.getAttribute('data-due-date') || '9999-12-31');
+                    const dateB = new Date(b.getAttribute('data-due-date') || '9999-12-31');
+                    return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
+                case 'priority-high':
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    const pA = Array.from(a.querySelector('.task-priority').classList).find(c => ['low', 'medium', 'high'].includes(c));
+                    const pB = Array.from(b.querySelector('.task-priority').classList).find(c => ['low', 'medium', 'high'].includes(c));
+                    return (priorityOrder[pB] || 0) - (priorityOrder[pA] || 0);
+                case 'title-asc':
+                    return a.querySelector('h4').textContent.localeCompare(b.querySelector('h4').textContent);
+                default:
+                    return 0;
+            }
+        });
+        
+        container.innerHTML = '';
+        cards.forEach(card => container.appendChild(card));
+    }
+
     document.getElementById('sortSelect').addEventListener('change', function() {
         if (this.value) {
             sortTasks(this.value);
@@ -232,6 +302,38 @@
 
     document.getElementById('searchInput').addEventListener('input', function() {
         filterTasks();
+    });
+
+    // Filter event listeners
+    document.getElementById('statusFilter').addEventListener('change', filterTasks);
+    document.getElementById('priorityFilter').addEventListener('change', filterTasks);
+
+    // Handle new task form submission
+    const createTaskForm = document.querySelector('#newTaskModal form');
+    if (createTaskForm) {
+        createTaskForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const taskData = {
+                title: document.getElementById('taskTitle').value,
+                description: document.getElementById('taskDescription').value,
+                priority: document.getElementById('taskPriority').value,
+                category_id: document.getElementById('taskCategory').value || null,
+                due_date: document.getElementById('taskDueDate').value || null
+            };
+            
+            const result = await API.createTask(taskData);
+            if (result) {
+                closeModal('newTaskModal');
+                createTaskForm.reset();
+                loadTasks();
+            }
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTasks();
     });
 </script>
 {% endblock %}
