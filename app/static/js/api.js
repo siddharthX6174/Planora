@@ -188,6 +188,15 @@ async function deleteCategory(categoryId) {
   return data;
 }
 
+async function updateCategory(categoryId, categoryData) {
+  const token = localStorage.getItem('access_token');
+  const data = await apiCall(`/categories/${categoryId}`, 'PUT', categoryData, token);
+  if (data) {
+    showAlert('Category updated successfully!', 'success');
+  }
+  return data;
+}
+
 // ==================== USER API ====================
 
 async function getProfile() {

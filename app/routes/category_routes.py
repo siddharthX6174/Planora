@@ -35,3 +35,16 @@ def delete_category(category_id):
     if status_code == 204:
         return '', 204
     return jsonify(result), status_code
+@bp.route('/<category_id>', methods=['PUT'])
+@jwt_required
+def update_category(category_id):
+    try:
+        data = request.get_json()
+        result, status_code = CategoryService.update_category(
+            g.current_user.id,
+            category_id,
+            data
+        )
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({'error': str(e)}), 422

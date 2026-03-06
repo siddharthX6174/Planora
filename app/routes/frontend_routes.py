@@ -39,6 +39,13 @@ def login():
         session['user_id'] = user.id
         session['user_email'] = user.email
         session['user_name'] = user.name
+
+        # Generate JWT access + refresh tokens for SPA API calls
+        auth_result, auth_status = AuthService.login({'email': email, 'password': password})
+        if auth_status == 200:
+            session['access_token'] = auth_result.get('access_token')
+            session['refresh_token'] = auth_result.get('refresh_token')
+
         flash('Login successful!', 'success')
         return redirect(url_for('frontend.dashboard'))
     
@@ -66,6 +73,11 @@ def register():
                 session['user_id'] = user.get('id')
                 session['user_email'] = user.get('email')
                 session['user_name'] = user.get('name')
+
+                # Save access/refresh tokens so frontend JS can call protected APIs
+                session['access_token'] = result.get('access_token')
+                session['refresh_token'] = result.get('refresh_token')
+
                 flash('Registration successful! You are now logged in.', 'success')
                 return redirect(url_for('frontend.dashboard'))
             else:

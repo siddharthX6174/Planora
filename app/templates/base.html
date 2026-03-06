@@ -46,6 +46,19 @@
         </div>
     </footer>
 
+    <script>
+      (function() {
+        // Keep localStorage tokens in sync with session-based login state.
+        {% if session.get('access_token') and session.get('refresh_token') %}
+          localStorage.setItem('access_token', {{ session.access_token|tojson }});
+          localStorage.setItem('refresh_token', {{ session.refresh_token|tojson }});
+        {% else %}
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+        {% endif %}
+      })();
+    </script>
+
     <script src="{{ url_for('static', filename='js/api.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% block extra_js %}{% endblock %}

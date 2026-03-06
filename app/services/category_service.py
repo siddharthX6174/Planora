@@ -57,3 +57,27 @@ class CategoryService:
         db.session.commit()
         
         return None, 204
+
+    @staticmethod
+    def update_category(user_id, category_id, data):
+        category = Category.query.filter_by(
+            id=category_id,
+            user_id=user_id
+        ).first()
+
+        if not category:
+            return {'error': 'Category not found'}, 404
+
+        # Ensure unique name per user when renaming
+        new_name = data.get('name')
+        if new_name and new_name != category.name:
+            existing = Category.query.filter_by(user_id=user_id, name=new_name).first()
+            if existing:
+                return {'error': 'Category with this name already exists'}, 409
+            category.name = new_name
+
+        if 'color' in data and data.get('color'):
+            category.color = data.get('color')
+
+        db.session.commit()
+        return category.to_dict(), 200

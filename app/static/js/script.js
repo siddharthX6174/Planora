@@ -30,11 +30,29 @@ function showModal(modalId) {
   }
 }
 
+let currentEditCategoryId = null;
+
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
     modal.classList.remove('active');
   }
+}
+
+function openEditCategoryModal(categoryId) {
+  const card = document.querySelector(`[data-category-id="${categoryId}"]`);
+  if (!card) return;
+
+  currentEditCategoryId = categoryId;
+
+  const name = card.querySelector('.category-name')?.textContent?.trim() || '';
+  const color = card.getAttribute('data-category-color') || '#808080';
+
+  document.getElementById('editCategoryName').value = name;
+  document.getElementById('editCategoryColor').value = color;
+  document.getElementById('editCategoryColorHex').value = color;
+
+  showModal('editCategoryModal');
 }
 
 // Close modal when clicking outside of it
@@ -80,11 +98,56 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Handle edit category form submission
+  const editCategoryForm = document.querySelector('#editCategoryModal form');
+  if (editCategoryForm) {
+    editCategoryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!currentEditCategoryId) return;
+
+      const name = document.getElementById('editCategoryName').value.trim();
+      const color = document.getElementById('editCategoryColor').value;
+
+      const res = await API.updateCategory(currentEditCategoryId, { name, color });
+      if (res) {
+        const card = document.querySelector(`[data-category-id="${currentEditCategoryId}"]`);
+        if (card) {
+          const titleEl = card.querySelector('.category-name');
+          if (titleEl) titleEl.textContent = name;
+          card.setAttribute('data-category-color', color);
+          card.style.borderLeftColor = color;
+        }
+        closeModal('editCategoryModal');
+      }
+    });
+  }
+
   // Task filter
   const filterInputs = document.querySelectorAll('.filter-bar input, .filter-bar select');
   filterInputs.forEach(input => {
     input.addEventListener('change', filterTasks);
   });
+
+  // Load categories for category page
+  if (typeof loadCategories === 'function') {
+    loadCategories();
+  }
+
+  // New category form submission
+  const newCategoryForm = document.querySelector('#newCategoryModal form');
+  if (newCategoryForm) {
+    newCategoryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('categoryName').value.trim();
+      const color = document.getElementById('categoryColor').value;
+      const res = await API.createCategory({ name, color });
+      if (res) {
+        closeModal('newCategoryModal');
+        this.reset();
+        if (typeof loadCategories === 'function') loadCategories();
+      }
+    });
+  }
 });
 
 // Filter tasks
@@ -354,6 +417,56 @@ function calculatePasswordStrength(password) {
   
   const levels = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
   return levels[strength] || 'Weak';
+}
+
+// Categories renderer
+function createCategoryCard(category) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.categoryId = category.id;
+  card.dataset.categoryColor = category.color;
+  card.style.borderLeft = `4px solid ${category.color}`;
+
+  const tasksCount = category.tasks_count || 0;
+
+  card.innerHTML = `
+    <div class="card-header">
+      <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.5rem;">📁</span>
+        <span class="category-name">${category.name}</span>
+      </h3>
+    </div>
+    <p>${category.description || ''}</p>
+    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+      <button class="btn btn-primary btn-small" onclick="openEditCategoryModal('${category.id}')">Edit</button>
+      <button class="btn btn-danger btn-small" onclick="deleteCategoryServer('${category.id}')">Delete</button>
+    </div>
+    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
+      <small style="color: #70587C;">📊 ${tasksCount} tasks</small>
+    </div>
+  `;
+
+  return card;
+}
+
+async function loadCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '<div class="card" style="text-align: center; padding: 2rem;">Loading categories…</div>';
+
+  const res = await API.getCategories();
+  const categories = res?.data || [];
+
+  grid.innerHTML = '';
+  if (!categories.length) {
+    grid.innerHTML = '<div class="card" style="text-align: center; padding: 2rem;">No categories found.</div>';
+    return;
+  }
+
+  categories.forEach(category => {
+    grid.appendChild(createCategoryCard(category));
+  });
 }
 
 // Confirmation dialog
