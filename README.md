@@ -6,6 +6,10 @@ Planora is a Flask-based task management application with:
 - A JWT-protected REST API under `/api/v1/*`
 - User auth, tasks, categories, and profile management
 
+## Preview
+
+![Planora Webpage](webpage.png)
+
 ## Status
 
 Core functionality is working based on the current codebase and included verification scripts:
