@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
           input.style.borderColor = '#dc3545';
           isValid = false;
         } else {
-          input.style.borderColor = '#C8B8DB';
+          input.style.borderColor = '#9F2042';
         }
       });
 
@@ -441,8 +441,8 @@ function createCategoryCard(category) {
       <button class="btn btn-primary btn-small" onclick="openEditCategoryModal('${category.id}')">Edit</button>
       <button class="btn btn-danger btn-small" onclick="deleteCategoryServer('${category.id}')">Delete</button>
     </div>
-    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #C8B8DB;">
-      <small style="color: #70587C;">📊 ${tasksCount} tasks</small>
+    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #9F2042;">
+      <small style="color: #7B0D1E;">📊 ${tasksCount} tasks</small>
     </div>
   `;
 

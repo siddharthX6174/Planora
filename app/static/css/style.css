@@ -1,10 +1,10 @@
 /* Color Scheme */
 :root {
-  --black: #000000;
-  --dark-purple: #502F4C;
-  --medium-purple: #70587C;
-  --light-purple: #C8B8DB;
-  --very-light-purple: #F9F4F5;
+  --black: #211103;
+  --dark-purple: #3D1308;
+  --medium-purple: #7B0D1E;
+  --light-purple: #9F2042;
+  --very-light-purple: #F8E5EE;
   --white: #FFFFFF;
   --success: #28a745;
   --danger: #dc3545;
@@ -53,6 +53,14 @@ nav .logo {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--light-purple);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+nav .logo img {
+  height: 3.5rem;
+  width: auto;
 }
 
 nav ul {
@@ -98,7 +106,7 @@ nav .user-menu {
 .btn-primary:hover {
   background-color: var(--medium-purple);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(80, 47, 76, 0.3);
+  box-shadow: 0 5px 15px rgba(61, 19, 8, 0.3);
 }
 
 .btn-secondary {
@@ -181,7 +189,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--dark-purple);
-  box-shadow: 0 0 0 3px rgba(80, 47, 76, 0.1);
+  box-shadow: 0 0 0 3px rgba(61, 19, 8, 0.1);
 }
 
 textarea {
@@ -201,7 +209,7 @@ textarea {
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(80, 47, 76, 0.2);
+  box-shadow: 0 5px 20px rgba(61, 19, 8, 0.2);
 }
 
 .card-header {
@@ -313,7 +321,7 @@ h3 {
 }
 
 .task-card:hover {
-  box-shadow: 0 5px 15px rgba(80, 47, 76, 0.2);
+  box-shadow: 0 5px 15px rgba(61, 19, 8, 0.2);
   transform: translateX(5px);
 }
 

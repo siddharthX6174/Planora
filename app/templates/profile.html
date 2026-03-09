@@ -24,10 +24,10 @@
         </div>
 
         <!-- Profile Tabs -->
-        <div style="display: flex; border-bottom: 2px solid #C8B8DB; margin-bottom: 2rem; gap: 1rem;">
-            <button class="tab-btn active" data-tab="overview" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #502F4C; font-weight: 600; cursor: pointer; border-bottom: 3px solid #502F4C;">Overview</button>
-            <button class="tab-btn" data-tab="security" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #70587C; cursor: pointer;">Security</button>
-            <button class="tab-btn" data-tab="preferences" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #70587C; cursor: pointer;">Preferences</button>
+        <div style="display: flex; border-bottom: 2px solid #9F2042; margin-bottom: 2rem; gap: 1rem;">
+            <button class="tab-btn active" data-tab="overview" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #3D1308; font-weight: 600; cursor: pointer; border-bottom: 3px solid #3D1308;">Overview</button>
+            <button class="tab-btn" data-tab="security" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #7B0D1E; cursor: pointer;">Security</button>
+            <button class="tab-btn" data-tab="preferences" style="padding: 1rem; border: none; background: none; font-size: 1rem; color: #7B0D1E; cursor: pointer;">Preferences</button>
         </div>
 
         <!-- Overview Tab -->
@@ -38,19 +38,19 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Full Name</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Full Name</strong></p>
                         <p>{{ user.name if user else '—' }}</p>
                     </div>
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Email</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Email</strong></p>
                         <p>{{ user.email if user else '—' }}</p>
                     </div>
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Phone</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Phone</strong></p>
                         <p>{{ user.phone or '—' }}</p>
                     </div>
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Location</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Location</strong></p>
                         <p>{{ user.location or '—' }}</p>
                     </div>
                 </div>
@@ -84,15 +84,15 @@
                 </div>
                 <div style="display: grid; gap: 1rem;">
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Account Status</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Account Status</strong></p>
                         <p><span style="background-color: #d4edda; color: #155724; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">Active</span></p>
                     </div>
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Member Since</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Member Since</strong></p>
                         <p>January 15, 2026</p>
                     </div>
                     <div>
-                        <p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Last Login</strong></p>
+                        <p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Last Login</strong></p>
                         <p>Today at 2:45 PM</p>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
                         <input type="password" id="newPassword" required>
-                        <small style="color: #70587C; display: block; margin-top: 0.5rem;">Minimum 8 characters with numbers and special characters</small>
+                        <small style="color: #7B0D1E; display: block; margin-top: 0.5rem;">Minimum 8 characters with numbers and special characters</small>
                     </div>
                     <div class="form-group">
                         <label for="confirmPassword">Confirm New Password</label>
@@ -128,7 +128,7 @@
                     <h3>Two-Factor Authentication</h3>
                 </div>
                 <div>
-                    <p style="color: #70587C; margin-bottom: 1rem;">Add an extra layer of security to your account.</p>
+                    <p style="color: #7B0D1E; margin-bottom: 1rem;">Add an extra layer of security to your account.</p>
                     <button class="btn btn-secondary">Enable 2FA</button>
                 </div>
             </div>
@@ -137,17 +137,17 @@
                 <div class="card-header">
                     <h3>Active Sessions</h3>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #C8B8DB;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #9F2042;">
                     <div>
                         <p style="margin: 0; font-weight: 600;">Chrome on Windows</p>
-                        <small style="color: #70587C;">Last active: Today at 2:45 PM</small>
+                        <small style="color: #7B0D1E;">Last active: Today at 2:45 PM</small>
                     </div>
                     <button class="btn btn-outline btn-small">Sign Out</button>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
                     <div>
                         <p style="margin: 0; font-weight: 600;">Safari on iPhone</p>
-                        <small style="color: #70587C;">Last active: Yesterday at 8:30 PM</small>
+                        <small style="color: #7B0D1E;">Last active: Yesterday at 8:30 PM</small>
                     </div>
                     <button class="btn btn-outline btn-small">Sign Out</button>
                 </div>
@@ -207,7 +207,7 @@
                 <div class="card-header">
                     <h3>Danger Zone</h3>
                 </div>
-                <p style="color: #70587C; margin-bottom: 1rem;">Irreversible actions on your account.</p>
+                <p style="color: #7B0D1E; margin-bottom: 1rem;">Irreversible actions on your account.</p>
                 <button class="btn btn-danger" onclick="if(confirm('Are you sure? This will permanently delete your account and all data.')) { alert('Account deletion request submitted'); }">Delete Account</button>
             </div>
         </div>
@@ -263,7 +263,7 @@
             
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(b => {
-                b.style.color = '#70587C';
+                b.style.color = '#7B0D1E';
                 b.style.borderBottomColor = 'transparent';
             });
             
@@ -271,8 +271,8 @@
             document.getElementById('tab-' + tabName).style.display = 'block';
             
             // Mark button as active
-            this.style.color = '#502F4C';
-            this.style.borderBottomColor = '#502F4C';
+            this.style.color = '#3D1308';
+            this.style.borderBottomColor = '#3D1308';
         });
     });
 
@@ -298,10 +298,10 @@
                 // Update personal information section
                 const infoCards = document.querySelectorAll('#tab-overview .card:first-child div');
                 if (infoCards.length >= 2) {
-                    infoCards[0].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Full Name</strong></p><p>${userData.name}</p>`;
-                    infoCards[1].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Email</strong></p><p>${userData.email}</p>`;
-                    if (infoCards[2]) infoCards[2].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Phone</strong></p><p>${userData.phone || '—'}</p>`;
-                    if (infoCards[3]) infoCards[3].innerHTML = `<p style="color: #70587C; margin-bottom: 0.3rem;"><strong>Location</strong></p><p>${userData.location || '—'}</p>`;
+                    infoCards[0].innerHTML = `<p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Full Name</strong></p><p>${userData.name}</p>`;
+                    infoCards[1].innerHTML = `<p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Email</strong></p><p>${userData.email}</p>`;
+                    if (infoCards[2]) infoCards[2].innerHTML = `<p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Phone</strong></p><p>${userData.phone || '—'}</p>`;
+                    if (infoCards[3]) infoCards[3].innerHTML = `<p style="color: #7B0D1E; margin-bottom: 0.3rem;"><strong>Location</strong></p><p>${userData.location || '—'}</p>`;
                 }
                 
                 closeModal('editProfileModal');
